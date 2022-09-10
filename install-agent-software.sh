@@ -4,22 +4,33 @@ sudo apt update
 sudo apt upgrade -y
 sudo apt autoremove -y
 # Install Node.js
-setupFile=nodesource_setup.sh
+nodeSetupFile=nodesource_setup.sh
+chromeSetupFile=google-chrome-stable_current_amd64.deb
 
 echo "*** Purging Node.js from the system... ***"
 sudo apt purge -y nodejs
 if [[ -f  /etc/apt/sources.list.d/nodesource.list ]]; then
     sudo rm -r /etc/apt/sources.list.d/nodesource.list
 fi
+echo "*** Purging Google Chrome from the system... ***"
+sudo apt purge -y google-chrome-stable
+echo "*** Removing no longer required packages... ***"
+sudo apt autoremove -y
 echo "*** Creating directory ~/Downloads... ***"
 mkdir -p ~/Downloads && cd ~/Downloads
 echo "*** Downloading Node.js setup file... ***"
-curl -sL https://deb.nodesource.com/setup_lts.x -o $setupFile
-sudo bash ~/Downloads/nodesource_setup.sh
+curl -sL https://deb.nodesource.com/setup_lts.x -o $nodeSetupFile
+sudo bash ~/Downloads/$nodeSetupFile
 echo "*** Installing Node.js... ***"
 sudo apt install -y nodejs
 echo "*** Removing Node.js setup file... ***"
-rm ~/Downloads/$setupFile
+rm ~/Downloads/$nodeSetupFile
+echo "*** Downloading Google Chrome setup file... ***"
+wget https://dl.google.com/linux/direct/$chromeSetupFile
+echo "*** Installing Google Chrome... ***"
+sudo apt install -y ~/Downloads/$chromeSetupFile
+echo "*** Removing Google Chrome setup file... ***"
+rm ~/Downloads/$chromeSetupFile
 # Install the Azure Pipelines Agent
 version=$VERSION #$1
 url=$URL #$2
